@@ -1,30 +1,32 @@
-
-class Grammar:
-    def __init__(self, terminals, non_terminals, productions, start_symbol):
-        self.terminals = terminals
-        self.non_terminals = non_terminals
-        self.productions = productions
-        self.start_symbol = start_symbol
-
-    def __str__(self):
-        return f"Terminals: {self.terminals}\nNon-terminals: {self.non_terminals}\nProductions: {self.productions}\nStart symbol: {self.start_symbol}"
-
-    def __repr__(self):
-        return f"Grammar({self.terminals}, {self.non_terminals}, {self.productions}, {self.start_symbol})"
-
+import matplotlib.pyplot as plt
 class Lr0:
-    def __init__(self, grammar):
+    def __init__(self, grammar, screen):
         self.grammar = grammar
         self.states = []
         self.transitions = []
+        self.screen = screen
 
-    def closure(self, item: str, pointer):
-        response = [item]
-        character = item[pointer]
+    def validateExistTuples(sef, temp_tuples, response):
+        for temp_tuple in temp_tuples:
+            if temp_tuple not in response:
+               return False
+        return True
+    
+
+    def closure(self, key_item_tupla):
+        item = key_item_tupla[1]
+        key = key_item_tupla[0]
+        response = [(key, item)]
+        pointer = item.find(".")
+        if pointer == len(item)-1:
+            return response
+        character = item[pointer+1]
+        if character == key:
+            return response
         if character in self.grammar["non_terminals"]:
             productions = self.grammar["productions"][character]
             for production in productions:
-                response.extend(self.closure(production, 0))  
+                response.extend(self.closure((character, "." + production)))
         return response
     
 
@@ -45,6 +47,34 @@ class Lr0:
                         self.grammar["productions"][key].extend([production + key + "'"])
             if hasRecursion:
                 self.grammar["productions"][key+"'"].append("")
+    
+    def getCharacter(self, item):
+        pointer = item.find(".")
+        if pointer == len(item)-1 :
+            return None
+        if item[pointer+1] == "'":
+            return item[pointer+1]+ "'" 
+        else:
+            return item[pointer+1]
+
+
+    def createAutomaton(self, items):
+        self.states.append(("I"+len(self.states), items))
+        for item in items:
+            key, production = item
+            character = self.getCharacter(production)
+
+            
+
+
+
+            
+
+        
+
+
+        
+
     
     """ def remove_left_recursion(self):
         for non_terminal in self.grammar['non_terminals']:

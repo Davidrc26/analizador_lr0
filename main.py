@@ -10,12 +10,11 @@ def load_grammar(file):
 
 if __name__ == "__main__":
     grammar = load_grammar('grammars/prueba1.json')
-    lr0_instance = lr0File.Lr0(grammar)
-    lr0_instance.remove_left_recursion()
-    result = lr0_instance.closure('J$', 0)
-    pprint(lr0_instance.grammar)
+    lr0_instance = lr0File.Lr0(grammar, Screen())
+    result = lr0_instance.closure(('F','(.E)')) 
+    ##lr0_instance.createAutomaton()
+    
     print(result) 
-
     """ plt.ion()
     s = Screen()
     s.add_node(1)

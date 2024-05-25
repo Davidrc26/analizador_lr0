@@ -1,11 +1,11 @@
 {
-    "non_terminals": ["S", "J", "T", "F"],
+    "non_terminals": ["S", "E", "T", "F"],
     "terminals": ["+", "(", ")", "*", "id", "$"],
     "start_symbol": "S",
     "productions": {
-        "S": ["J$"],
-        "J": ["J+T", "T"],
+        "S": ["E$"],
+        "E": ["E+T", "T"],
         "T": ["T*F", "F"],
-        "F": ["(J)", "id"]
+        "F": ["id", "(E)"]
     }
 }
