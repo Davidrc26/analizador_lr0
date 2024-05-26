@@ -15,6 +15,8 @@ if __name__ == "__main__":
     start_symbol= lr0_instance.grammar["start_symbol"]
     start_production = lr0_instance.grammar["productions"][start_symbol][0]
     lr0_instance.createAutomaton(lr0_instance.closure((start_symbol, "."+start_production)))
+    lr0_instance.screen.paintSinks()
+    lr0_instance.screen.draw()
     plt.show(block=True)
     pprint(lr0_instance.states)
     pprint(lr0_instance.transitions)

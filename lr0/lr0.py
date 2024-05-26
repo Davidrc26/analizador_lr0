@@ -49,10 +49,7 @@ class Lr0:
         pointer = item.find(".")
         if pointer == len(item)-1:
             return None
-        if item[pointer+1] == "'":
-            return item[pointer+1] + "'"
-        else:
-            return item[pointer+1]
+        return item[pointer+1]
 
     def createAutomaton(self, items):
         stateName = "Q"+str(len(self.states))
@@ -80,12 +77,12 @@ class Lr0:
                 new_state.extend(self.closure((key2, production)))
             existsState = self.getExistStates(new_state)
             if existsState:
-                self.screen.add_edge(stateName, existsState[0])
+                self.screen.add_edge(stateName, existsState[0], key)
                 self.transitions.append({"origin": stateName, "destination": existsState[0], "character":key})
             else:
                 name = self.createAutomaton(new_state)
                 self.transitions.append({"origin": stateName, "destination": name, "character": key})
-                self.screen.add_edge(stateName, name)
+                self.screen.add_edge(stateName, name, key)
             self.screen.draw()
             plt.pause(0.5)
         return stateName
@@ -99,4 +96,5 @@ class Lr0:
             if set(state[1]) == set(state_param):
                 return state
         return None
-
+    
+    
