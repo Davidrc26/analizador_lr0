@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 class Screen:
     def __init__(self):
-        self.graph = nx.Graph()
+        self.graph = nx.DiGraph()
     
 
     def add_node(self, node):
@@ -15,4 +15,5 @@ class Screen:
 
     def draw(self):
         plt.clf()
-        nx.draw(self.graph, with_labels=True, font_weight='bold')
+        pos = nx.shell_layout(self.graph)
+        nx.draw(self.graph, pos, with_labels=True, font_weight='bold', node_size=1000)

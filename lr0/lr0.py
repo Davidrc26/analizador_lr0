@@ -55,11 +55,10 @@ class Lr0:
             return item[pointer+1]
 
     def createAutomaton(self, items):
-        stateName = "I"+str(len(self.states))
+        stateName = "Q"+str(len(self.states))
         self.states.append((stateName, items))
-        ##self.screen.add_node(stateName)
-        ##self.screen.draw()
-        ##plt.pause(1)
+        self.screen.add_node(stateName)
+        self.screen.draw() 
         new_state = []
         transitions = {}
         if not items:
@@ -74,52 +73,30 @@ class Lr0:
                     transitions[character].append(item)
         transitionsKeys = transitions.keys()
         for key in transitionsKeys:
+            new_state = []
             for item in transitions[key]:
-                key, production = item
+                key2, production = item
                 production = self.movePoint(production)
-                new_state.extend(self.closure((key, production)))
+                new_state.extend(self.closure((key2, production)))
             existsState = self.getExistStates(new_state)
             if existsState:
-                ##self.screen.add_edge(stateName, existsState[0])
-                self.transitions.append({
-                    "from": stateName,
-                    "to": existsState[0],
-                    "label": key
-                })
+                self.screen.add_edge(stateName, existsState[0])
+                self.transitions.append({"origin": stateName, "destination": existsState[0], "character":key})
             else:
-                self.states.append(("I"+str(len(self.states)), new_state))
-                self.transitions.append({
-                    "from": stateName,
-                    "to": "I"+str(len(self.states)-1),
-                    "label": key
-                })
-
-            ##self.screen.add_edge(stateName, "I"+str(len(self.states)))
-            ##self.screen.draw()
-            ##plt.pause(1)
+                name = self.createAutomaton(new_state)
+                self.transitions.append({"origin": stateName, "destination": name, "character": key})
+                self.screen.add_edge(stateName, name)
+            self.screen.draw()
+            plt.pause(0.5)
+        return stateName
 
     def movePoint(self, item: str):
         pointer = item.find(".")
         return item[:pointer] + item[pointer+1] + "." + item[pointer+2:]
 
     def getExistStates(self, state_param):
-        list_states = [state[1] for state in self.states]
-        for state in list_states:
-            if set(state) == set(state_param):
+        for state in self.states:
+            if set(state[1]) == set(state_param):
                 return state
         return None
 
-    """ def remove_left_recursion(self):
-        for non_terminal in self.grammar['non_terminals']:
-            # Buscar producciones que tienen recursión por la izquierda
-            recursive_productions = [p for p in self.grammar['productions'][non_terminal] if p and p[0] == non_terminal]
-            non_recursive_productions = [p for p in self.grammar['productions'][non_terminal] if not p or p[0] != non_terminal]
-
-            if recursive_productions:
-                # Crear un nuevo símbolo no terminal
-                new_non_terminal = non_terminal + "'"
-                self.grammar['non_terminals'].append(new_non_terminal)
-
-                # Reemplazar las producciones recursivas por la izquierda
-                self.grammar['productions'][non_terminal] = [p + new_non_terminal for p in non_recursive_productions]
-                self.grammar['productions'][new_non_terminal] = [p[1:] + new_non_terminal for p in recursive_productions] + [''] """
