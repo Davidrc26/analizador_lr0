@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import mplcursors
 
 
 class Screen:
@@ -21,7 +22,19 @@ class Screen:
                 font_weight='bold', node_size=1000)
         edge_labels = nx.get_edge_attributes(self.graph, 'label')
         nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_labels)
-        
+    
+
+    def showInfo(self, states):
+        cursor = mplcursors.cursor(hover=True, highlight=True ) 
+        @cursor.connect("add")
+        def on_add(sel):
+            print(sel.target)
+            node_positions = nx.get_node_attributes(self.graph, 'pos')
+            print(node_positions)
+            """ for state, info in states:
+                if state == node:
+                    print(info)
+                    sel.annotation.set_text(str(info)) """
 
     def paintAcceptance(self, state):
         self.graph.nodes[state]["color"] = "green"
