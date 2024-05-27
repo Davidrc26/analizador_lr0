@@ -18,6 +18,8 @@ class Screen:
         colors = [self.graph.nodes[node].get(
             'color', 'blue') for node in self.graph.nodes]
         pos = nx.spiral_layout(self.graph)
+        for node, position in pos.items():
+            self.graph.nodes[node]['pos'] = position
         nx.draw(self.graph, pos, node_color=colors, with_labels=True,
                 font_weight='bold', node_size=1000)
         edge_labels = nx.get_edge_attributes(self.graph, 'label')
@@ -25,16 +27,14 @@ class Screen:
     
 
     def showInfo(self, states):
-        cursor = mplcursors.cursor(hover=True, highlight=True ) 
+        cursor = mplcursors.cursor(hover=True)
         @cursor.connect("add")
         def on_add(sel):
-            print(sel.target)
-            node_positions = nx.get_node_attributes(self.graph, 'pos')
-            print(node_positions)
-            """ for state, info in states:
-                if state == node:
-                    print(info)
-                    sel.annotation.set_text(str(info)) """
+            for state, info in states:
+                pos = self.get_node_position(state)
+                if str(pos) == str(sel.target):
+                    formatted_info = '\n'.join(' -> '.join(map(str, tup)) for tup in info)
+                    sel.annotation.set_text(formatted_info)
 
     def paintAcceptance(self, state):
         self.graph.nodes[state]["color"] = "green"
@@ -45,3 +45,6 @@ class Screen:
                  if outdegree == 0]
         for sink in sinks:
             self.paintAcceptance(sink)
+
+    def get_node_position(self, node):
+        return self.graph.nodes[node]['pos']

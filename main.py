@@ -19,6 +19,4 @@ if __name__ == "__main__":
     lr0_instance.screen.draw()
     lr0_instance.screen.showInfo(lr0_instance.states)
     plt.show(block=True)
-    pprint(lr0_instance.states)
-    pprint(lr0_instance.transitions)
 
